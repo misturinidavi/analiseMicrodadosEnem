@@ -1,3 +1,4 @@
+#importanto bibliotecas 
 import pandas as pd
 import matplotlib
 
