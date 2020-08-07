@@ -1,0 +1,115 @@
+import pandas as pd
+import matplotlib
+
+# importando o arquivo .csv
+microdadosEnem = pd.read_csv("brutos/DADOS/MICRODADOS_ENEM_2018.csv", sep=";", encoding = 'ISO-8859-1', nrows=100000)
+
+# vizualizando o dataframe
+# mandeira alternativa de vizualizar apenas um número limitado de linhas: 
+# menoslinhas = microdadosEnem[0:1000] <- vizualiza as 1000 primerias linhas dos dados
+# é interessante considera um número razoável de linhas, de forma a não prejudicar a accuracy da análise 
+microdadosEnem.head()
+
+# outra forma de ver o dataframe
+microdadosEnem
+
+# array com nome de todas as colunas
+microdadosEnem.columns.values
+
+# selecionando algumas colunas de interesse e salvando em uma nova variável
+colunasSelecionadasEnem = ['NO_MUNICIPIO_RESIDENCIA', 'CO_UF_RESIDENCIA', 'SG_UF_RESIDENCIA',
+       'NU_IDADE', 'TP_SEXO', 'TP_ESTADO_CIVIL', 'TP_COR_RACA',
+       'TP_NACIONALIDADE', 'CO_MUNICIPIO_NASCIMENTO',
+       'NO_MUNICIPIO_NASCIMENTO', 'CO_UF_NASCIMENTO', 'SG_UF_NASCIMENTO',
+       'TP_ST_CONCLUSAO', 'TP_ANO_CONCLUIU', 'TP_ESCOLA', 'TP_ENSINO',
+       'IN_TREINEIRO', 'CO_ESCOLA', 'CO_MUNICIPIO_ESC',
+       'NO_MUNICIPIO_ESC', 'CO_UF_ESC', 'SG_UF_ESC',
+       'TP_DEPENDENCIA_ADM_ESC', 'TP_LOCALIZACAO_ESC', 'TP_SIT_FUNC_ESC',
+       'IN_BAIXA_VISAO', 'IN_CEGUEIRA', 'IN_SURDEZ',
+       'IN_DEFICIENCIA_AUDITIVA', 'IN_SURDO_CEGUEIRA',
+       'IN_DEFICIENCIA_FISICA', 'IN_DEFICIENCIA_MENTAL',
+       'IN_DEFICIT_ATENCAO', 'IN_DISLEXIA', 'IN_DISCALCULIA',
+       'IN_AUTISMO', 'IN_VISAO_MONOCULAR', 'IN_OUTRA_DEF', 'IN_GESTANTE',
+       'IN_LACTANTE', 'IN_IDOSO', 'IN_ESTUDA_CLASSE_HOSPITALAR',
+       'IN_SEM_RECURSO', 'IN_BRAILLE', 'IN_AMPLIADA_24', 'IN_AMPLIADA_18',
+       'IN_LEDOR', 'IN_ACESSO', 'IN_TRANSCRICAO', 'IN_LIBRAS',
+       'IN_LEITURA_LABIAL', 'IN_MESA_CADEIRA_RODAS',
+       'IN_MESA_CADEIRA_SEPARADA', 'IN_APOIO_PERNA', 'IN_GUIA_INTERPRETE',
+       'IN_COMPUTADOR', 'IN_CADEIRA_ESPECIAL', 'IN_CADEIRA_CANHOTO',
+       'IN_CADEIRA_ACOLCHOADA', 'IN_PROVA_DEITADO', 'IN_MOBILIARIO_OBESO',
+       'IN_LAMINA_OVERLAY', 'IN_PROTETOR_AURICULAR', 'IN_MEDIDOR_GLICOSE',
+       'IN_MAQUINA_BRAILE', 'IN_SOROBAN', 'IN_MARCA_PASSO', 'IN_SONDA',
+       'IN_MEDICAMENTOS', 'IN_SALA_INDIVIDUAL', 'IN_SALA_ESPECIAL',
+       'IN_SALA_ACOMPANHANTE', 'IN_MOBILIARIO_ESPECIFICO',
+       'IN_MATERIAL_ESPECIFICO', 'IN_NOME_SOCIAL']
+ 
+# filtrando as colunas e criando um novo dataframe e chamando uma nova variável
+microdadosEnemSelecionado = microdadosEnem.filter(items=colunasSelecionadasEnem)
+
+microdadosEnemSelecionado.head()
+
+# selecionando a informação de uma coluna específica
+coluna_no_municipio_residencia = microdadosEnemSelecionado['NO_MUNICIPIO_RESIDENCIA']
+
+coluna_no_municipio_residencia
+
+# achando a distribuição de alunos por município, usando método de 'series' e ordenando em ordem alfabética usando .sort_index()
+coluna_no_municipio_residencia.value_counts().sort_index()
+
+coluna_nu_idade = microdadosEnemSelecionado['NU_IDADE']
+
+coluna_nu_idade
+
+# coluna_nu_idade.value_counts() contará a quantidade de pessoas por idade
+coluna_nu_idade.value_counts().sort_index()
+
+# criando um histograma (é necessário usar o pacote matplotlib)
+# bins adiciona número de barras
+coluna_nu_idade.hist(bins=30)
+
+# aplicando o mesmo princípio para analisar os Estados
+coluna_sg_uf_residencia = microdadosEnemSelecionado['SG_UF_RESIDENCIA']
+
+coluna_sg_uf_residencia.value_counts()
+
+coluna_sg_uf_residencia.hist(bins=30)
+
+# objetivo: cálculo da % de gestante que fizeram a prova
+coluna_in_gestante = microdadosEnemSelecionado['IN_GESTANTE']
+
+coluna_in_gestante.value_counts()
+
+distInGestante = coluna_in_gestante.value_counts()
+
+# fazendo uso de 'list comprehension'
+percentInGestante = [100*x/distInGestante.sum() for x in distInGestante]
+
+percentInGestante
+
+# vamos, primeiramente, saber quantas pessoas do sexo feminino estão nos nossos dados para obter uma % mais real
+coluna_tp_sexo = microdadosEnemSelecionado['TP_SEXO']
+
+distTpSexo = coluna_tp_sexo.value_counts()
+
+distTpSexo
+
+percentTpSexo = [100*x/distTpSexo.sum() for x in distTpSexo]
+
+percentTpSexo
+
+# selecionando o primeiro elemento de distTpSexo e o segundo elemento de distInGestante para calcular a % de gestantes
+sexoFeminino = distTpSexo[0]
+nu_gestantes = distInGestante[1]
+
+sexoFeminino
+
+nu_gestantes
+
+percentGestantes = 100*nu_gestantes/sexoFeminino
+
+percentGestantes
+
+# calculando o percentual de não gestantes
+percentNaoGestante = 100 - percentGestantes
+
+percentNaoGestante
