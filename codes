@@ -114,3 +114,40 @@ percentGestantes
 percentNaoGestante = 100 - percentGestantes
 
 percentNaoGestante
+
+######################################################################
+##### Quem escreve melhor a redação do enem? Meninos ou meninas? #####
+######################################################################
+
+colunasSelecionadas = ['TP_SEXO', 'NU_NOTA_REDACAO']
+
+microdadosEnemSexoRedacao = microdadosEnem.filter(items=colunasSelecionadas)
+
+microdadosEnemSexoRedacao.head()
+
+#utilizamos o drop.na para eliminar colunas preenchidas com 'NaN'
+microdadosEnemSexoRedacao = microdadosEnemSexoRedacao.dropna()
+
+microdadosEnemSexoRedacao.head()
+
+# utilizando o GROUBY para analisar a distribuição entre F e M
+# agruparemos pela coluna TP_SEXO e aplicamos uma contagem
+microdadosEnemSexoRedacao.groupby('TP_SEXO').count()
+
+# será se há pelo menos uma pessoa F e M que tiraram a nota máxima?
+microdadosEnemSexoRedacao.groupby('TP_SEXO').max()
+
+# cálculo da média das notas da redação
+microdadosEnemSexoRedacao.groupby('TP_SEXO').mean()
+
+# cálculo da mediana das notas da redação
+microdadosEnemSexoRedacao.groupby('TP_SEXO').median()
+
+# qual a nota mínima tirada, retirando os casos em que a prova foi zerada?
+microdadosEnemSexoRedacao[microdadosEnemSexoRedacao.NU_NOTA_REDACAO > 0].groupby('TP_SEXO').min()
+
+# plotando um histograma 
+microdadosEnemSexoRedacao.groupby('TP_SEXO').hist()
+
+# utilizando o método describe para termos noção das informações do conjunto de dados
+microdadosEnemSexoRedacao.groupby('TP_SEXO').describe()
